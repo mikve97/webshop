@@ -1,0 +1,51 @@
+logging:
+  level: INFO
+  loggers:
+    nl.dfbackend.git: DEBUG
+
+jwt-secret: "d8?qPu*%^mu5#gR2RdN2ezs!!V7=b=@jNj=WZMRDDZq5nqJ389SkQ4p+K5EQMB_&#$VG-PhBnZQ4SgtQcBpx8pG628+qDM+e#JU#2$B899m3b?DeX8aExrW=6c$^xnTJSjaAehqCxL8dQ7T&=9N7RPZDhn&^8MWyc_dP5_jd-^%QFfxbSGA7nb!4g$tCyy8AvXG=M-U=^e35G!4j_h!pjzPB-+Bd5M8#MX6Ry_5vS9&pzKTfK_ScJrv_$5ftw+_q!$ff4mNeBEnujR-gXn^Uk=n$rdXM7yZsq3!?h7mKW-F8hmAjxRmChD@7W#H$JHYc9GUx-s&#QP-u&vZsjpDvfNDZkb7qLTGKLMG5-J$Hf_fJ@^5ZRGYBgBXhTGQ8tky=sQMQya4kT%4+ThN2ScRJssREdw$-4!j8NtpdJfMKM@4aJF2C_+*Tz#hyF7-QpuASKf6^EvFRFcza2$dW?kaEuV&FVusMqh2Z^@stR?UdqK2x@cka5!Zq_G%yjN#!DjKu"
+
+apiKey: 79554e2460ae336c07c3eb0208adbb4cc4af184c17b51e0a2373cc0f9bba87b5
+userId: 56840
+
+
+database:
+  # the name of your JDBC driver
+  driverClass: org.postgresql.Driver
+
+  # the username
+  user: kvszgnmq
+
+  # the password
+  password: HLwhrVFmFDIO5LGAtLNPMghrHhQjEbdK
+
+  # the JDBC URL
+  url: jdbc:postgresql://manny.db.elephantsql.com:5432/kvszgnmq
+
+  # any properties specific to your JDBC driver:
+  properties:
+    charSet: UTF-8
+
+  # the maximum amount of time to wait on an empty pool before throwing an exception
+  maxWaitForConnection: 1s
+
+  # the SQL query to run when validating a connection's liveness
+  validationQuery: "/* MyService Health Check */ SELECT 1"
+
+  # the timeout before a connection validation queries fail
+  validationQueryTimeout: 3s
+
+  # the minimum number of connections to keep open
+  minSize: 1
+
+  # the maximum number of connections to keep open
+  maxSize: 50
+
+  # whether or not idle connections should be validated
+  checkConnectionWhileIdle: false
+
+  # the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing
+  evictionInterval: 10s
+
+  # the minimum amount of time an connection must sit idle in the pool before it is eligible for eviction
+  minIdleTime: 1 minute
