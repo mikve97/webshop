@@ -17,16 +17,16 @@ import javax.validation.constraints.NotNull;
 public class CredentialModel {
     @JsonProperty
     @NotNull
-    private String username;
+    private String email;
 
     @JsonProperty
     @NotNull
     private String password;
 
     @JsonCreator
-    public CredentialModel(@JsonProperty("username") String username,
+    public CredentialModel(@JsonProperty("email") String email,
                            @JsonProperty("password") String password) {
-        this.username = username;
+        this.email = email;
         this.password = password;
     }
 
@@ -38,11 +38,11 @@ public class CredentialModel {
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

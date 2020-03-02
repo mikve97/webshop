@@ -19,7 +19,7 @@ public class UserModel implements Principal {
     private int userId;
     @JsonProperty
     @NotNull
-    private String username;
+    private String email;
     @JsonProperty
     @NotNull
     private String password;
@@ -30,11 +30,11 @@ public class UserModel implements Principal {
     //constructor
     @JsonCreator
     public UserModel(@JsonProperty("userId") Integer userId,
-                     @JsonProperty("username") String username,
+                     @JsonProperty("email") String email,
                      @JsonProperty("password") String password){
 
         this.userId = userId;
-        this.username = username;
+        this.email = email;
         this.password = password;
     }
 
@@ -42,12 +42,12 @@ public class UserModel implements Principal {
         return userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String username) {
+        this.email = email;
     }
 
     @JsonIgnore
@@ -69,6 +69,6 @@ public class UserModel implements Principal {
 
     @Override
     public String getName() {
-        return username;
+        return this.email;
     }
 }

@@ -22,14 +22,32 @@ public class ProductResource {
 
     @Path("/getAllProducts")
     @GET
-    public Response getAllProducts(@HeaderParam("Token") String TokenHeaderParam) throws AuthenticationException {
+    public Response getAllProducts(@QueryParam("Token") String TokenHeaderParam) throws AuthenticationException {
         List<ProductModel> product = this.pService.getAllProducts(TokenHeaderParam);
 
         if(product != null){
             return Response.ok(product).build();
         }else{
-            return Response.ok("No products found").build();
+            return Response.ok("No products found or the user not not authenticated").build();
         }
+    }
+
+    @Path("/getProduct/{productId}")
+    @GET
+    public Response setProduct(@HeaderParam("Token") String TokenHeaderParam, @PathParam("productId") int pId) throws AuthenticationException {
+        System.out.println(TokenHeaderParam + " "+  pId);
+
+        //Returns the found product
+        ProductModel product = this.pService.getProduct(TokenHeaderParam, pId);
+
+        if(product != null){
+            return Response.ok(product).build();
+        }else{
+            return Response.ok("No product found with id: "+ pId).build();
+        }
+
+
+
     }
 
     @Path("/setProduct")

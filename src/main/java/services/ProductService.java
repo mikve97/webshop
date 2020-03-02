@@ -24,10 +24,23 @@ public class ProductService {
     }
 
     public List<ProductModel> getAllProducts(String token) throws AuthenticationException {
-//        if (this.authenticationService.authenticate(token).isPresent()) {
+        if (this.authenticationService.authenticate(token).isPresent()) {
             ProductPersistence productDAO = dbi.open(ProductPersistence.class);
             List<ProductModel> fetchedProducts = productDAO.getAllProducts();
+            productDAO.close();
             return fetchedProducts;
+        } else {
+            return null;
+        }
+    }
+
+    public ProductModel getProduct(String TokenHeaderParam, int pId) throws AuthenticationException {
+//        if (this.authenticationService.authenticate(token).isPresent()) {
+        ProductPersistence productDAO = dbi.open(ProductPersistence.class);
+        ProductModel product = productDAO.getProducts(pId);
+        productDAO.close();
+
+        return product;
 //        } else {
 //            return null;
 //        }
@@ -36,8 +49,11 @@ public class ProductService {
     public int setProduct(String TokenHeaderParam, String name, String descr, Double price, int catId) throws AuthenticationException {
 //        if (this.authenticationService.authenticate(token).isPresent()) {
         ProductPersistence productDAO = dbi.open(ProductPersistence.class);
-        int productID = productDAO.setProduct(name, descr, price, catId);
-        return productID;
+        //Returns the number of rows changed, if the query failed this should return 0
+        int row = productDAO.setProduct(name, descr, price, catId);
+        productDAO.close();
+
+        return row;
 //        } else {
 //            return null;
 //        }

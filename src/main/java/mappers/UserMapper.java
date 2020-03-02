@@ -19,7 +19,7 @@ public class UserMapper implements ResultSetMapper<UserModel> {
     public UserModel map(int i, ResultSet r, StatementContext statementContext) throws SQLException {
         return new UserModel(
                 r.getInt("user_id"),
-                r.getString("username"),
+                r.getString("email"),
                 r.getString("password")
         );
     }

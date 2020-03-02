@@ -34,7 +34,7 @@ public class AuthenticationService implements Authenticator<String, UserModel> {
 			if(this.authorisationService.decodeJWToken(jwtoken)) {
 				userDAO = dbi.open(UserPersistence.class);
 		        
-		        user = userDAO.getUserByUsername(this.authorisationService.retrieveUsernameFromJWToken(jwtoken));
+		        user = userDAO.getUserByEmail(this.authorisationService.retrieveEmailFromJWToken(jwtoken));
 		        
 		        userDAO.close();
 			}
@@ -53,12 +53,10 @@ public class AuthenticationService implements Authenticator<String, UserModel> {
 	public Optional<UserModel> authenticateUser(CredentialModel credential) throws SQLException {
         userDAO = dbi.open(UserPersistence.class);
         
-        UserModel user = userDAO.getUserByUsername(credential.getUsername());
+        UserModel user = userDAO.getUserByEmail(credential.getEmail());
 		 
-		user.setAuthToken(authorisationService.encodeJWToken(user.getUsername()));
-		
-        System.out.println(user.getAuthToken());
-        
+		user.setAuthToken(authorisationService.encodeJWToken(user.getEmail(), user.getUserId()));
+
       
         userDAO.close();
         
