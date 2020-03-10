@@ -6,10 +6,7 @@ import models.ProductModel;
 import services.OrderService;
 import services.ProductService;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
@@ -26,13 +23,28 @@ public class OrderResource {
 
     @Path("/getAllOrders")
     @GET
-    public Response getAllProducts(@HeaderParam("Token") String TokenHeaderParam) throws AuthenticationException {
-        List<OrderModel> product = this.oService.getAllOrders(TokenHeaderParam);
+    public Response getAllOrders(@HeaderParam("Token") String TokenHeaderParam) throws AuthenticationException {
+        List<OrderModel> orders = this.oService.getAllOrders(TokenHeaderParam);
 
-        if(product != null){
-            return Response.ok(product).build();
+        if(orders != null){
+            return Response.ok(orders).build();
         }else{
             return Response.ok("No products found").build();
         }
     }
+
+    @Path("/setNewOrder")
+    @POST
+    //TODO: QUERY PARAM WITH REPLACE WITH PRODUCTMODEL
+    public Response setNewOrder(@HeaderParam("Token") String TokenHeaderParam, @QueryParam("products") String JSONproduct) throws AuthenticationException {
+        int product = this.oService.setNewOrder(2);
+
+        if(product != -1){
+            return Response.ok(product).build();
+        }else{
+            return Response.ok("Failed creating order").build();
+        }
+    }
+
+
 }

@@ -41,7 +41,7 @@ public class MainApplication extends Application<MainConfiguration> {
     }
 
     /**
-     *  @author Oussama Fahchouch
+     *  @author Mike van Es
      */
     @Override
     public void initialize(final Bootstrap<MainConfiguration> bootstrap) {

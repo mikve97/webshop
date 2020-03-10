@@ -56,16 +56,16 @@ public class AuthorisationService {
 	
 	/**
 	 * @param jwtoken
-	 * @return String with username from jwtoken
+	 * @return Retrieve any claim from the JWT token
 	 */
-	public String retrieveEmailFromJWToken(String jwtoken) {
+	public String retrieveClaim(String jwtoken, String claim) {
 		String username = "";
 		
 		Jws<Claims> result = Jwts.parser()	
 				.setSigningKey(Keys.hmacShaKeyFor(this.secret))
 				.parseClaimsJws(jwtoken);
 			
-		username = result.getBody().get("sub").toString();
+		username = result.getBody().get(claim).toString();
 
 		return username;
 	}

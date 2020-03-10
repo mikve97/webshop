@@ -3,11 +3,14 @@ package services;
 import io.dropwizard.auth.AuthenticationException;
 import models.OrderModel;
 import models.ProductModel;
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
 import org.skife.jdbi.v2.DBI;
 import persistences.OrderPersistence;
 import persistences.ProductPersistence;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 public class OrderService {
@@ -17,48 +20,50 @@ public class OrderService {
     public OrderService() throws SQLException {
         this.authenticationService = new AuthenticationService();
 
-        nl.dfbackend.git.util.DbConnector.getInstance();
-        dbi = nl.dfbackend.git.util.DbConnector.getDBI();
+        util.DbConnector.getInstance();
+        dbi = util.DbConnector.getDBI();
 
 
     }
 
     public List<OrderModel> getAllOrders(String token) throws AuthenticationException {
 //        if (this.authenticationService.authenticate(token).isPresent()) {
-        OrderPersistence productDAO = dbi.open(OrderPersistence.class);
-        List<OrderModel> fetchedProducts = productDAO.getAllOrders();
-        productDAO.close();
+            OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
 
-        for(OrderModel order : fetchedProducts) {
+            List<OrderModel> fetchedOrders = orderDAO.getAllOrders();
+            orderDAO.close();
+
+        for(OrderModel order : fetchedOrders) {
             //Retrieve the products from a given order. And insert them in to the order.
             order.setProducts( this.getProductsByOrderId(order.getOrderId()) );
         }
 
-        return fetchedProducts;
+        return fetchedOrders;
 //        } else {
 //            return null;
 //        }
     }
 
+
+    //TODO: MOVE TO PRODUCT SERVICE
     private List<ProductModel> getProductsByOrderId(int oId){
-        OrderPersistence productDAO = dbi.open(OrderPersistence.class);
-        List<ProductModel> fetchedProducts = productDAO.getAllProductsByOrderId(oId);
-        productDAO.close();
+        OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
+        List<ProductModel> fetchedProducts = orderDAO.getAllProductsByOrderId(oId);
+        orderDAO.close();
 
         return fetchedProducts;
 
     }
 
-    public List<OrderModel> getOrderByUser(String token) throws AuthenticationException {
+    //TODO: REPLACE USER ID IN THE TOKEN VAR WITH THE JWT CLAIMS USERID
+    public int setNewOrder(int token) throws AuthenticationException {
 //        if (this.authenticationService.authenticate(token).isPresent()) {
-        OrderPersistence productDAO = dbi.open(OrderPersistence.class);
-        List<OrderModel> fetchedProducts = productDAO.getAllOrders();
-        productDAO.close();
 
-        for(OrderModel order : fetchedProducts) {
-            //Retrieve the products from a given order. And insert them in to the order.
-            order.setProducts( this.getProductsByOrderId(order.getOrderId()) );
-        }
+        OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
+        int fetchedProducts = orderDAO.insertOrderTrans(token, new Date());
+        System.out.println(fetchedProducts);
+        orderDAO.close();
+
 
         return fetchedProducts;
 //        } else {

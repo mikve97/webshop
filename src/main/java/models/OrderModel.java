@@ -10,6 +10,7 @@ public class OrderModel {
 
     private int orderId;
     private int userId;
+    private int contactNawId;
     private Date orderDate;
     private List<ProductModel> products;
 
@@ -20,11 +21,12 @@ public class OrderModel {
         // Jackson deserialization
     }
 
-    public OrderModel(int orderId, int userId, Date orderDate, List<ProductModel> products){
+    public OrderModel(int orderId, int userId, int contactNawId, Date orderDate, List<ProductModel> products){
         this.orderId = orderId;
         this.userId = userId;
         this.orderDate = orderDate;
         this.products = products;
+        this.contactNawId = contactNawId;
     }
 
     public int getOrderId() {

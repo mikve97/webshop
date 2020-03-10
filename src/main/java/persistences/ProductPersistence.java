@@ -2,10 +2,12 @@ package persistences;
 
 import mappers.ProductMapper;
 import models.ProductModel;
+
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
+
 
 import java.util.List;
 
@@ -41,5 +43,5 @@ public interface ProductPersistence {
 	int setProduct(@Bind("pName") String name, @Bind("pDescr") String descr, @Bind("pPrice") Double price, @Bind("pCatId") int catId);
 
 	void close();
-	
+
 }

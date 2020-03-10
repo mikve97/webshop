@@ -2,12 +2,12 @@ package services;
 
 import io.dropwizard.auth.AuthenticationException;
 import models.ProductModel;
-import persistences.ProductPersistence;
-import nl.dfbackend.git.util.DbConnector;
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
 import org.skife.jdbi.v2.DBI;
+import persistences.ProductPersistence;
+import persistences.UserPersistence;
 
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.QueryParam;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,28 +17,30 @@ public class ProductService {
     public ProductService() throws SQLException {
         this.authenticationService = new AuthenticationService();
 
-        DbConnector.getInstance();
-        dbi = DbConnector.getDBI();
+        util.DbConnector.getInstance();
+        dbi = util.DbConnector.getDBI();
 
 
     }
 
     public List<ProductModel> getAllProducts(String token) throws AuthenticationException {
-        if (this.authenticationService.authenticate(token).isPresent()) {
+//        if (this.authenticationService.authenticate(token).isPresent()) {
             ProductPersistence productDAO = dbi.open(ProductPersistence.class);
             List<ProductModel> fetchedProducts = productDAO.getAllProducts();
             productDAO.close();
+
+
             return fetchedProducts;
-        } else {
-            return null;
-        }
+//        } else {
+//            return null;
+//        }
     }
 
     public ProductModel getProduct(String TokenHeaderParam, int pId) throws AuthenticationException {
 //        if (this.authenticationService.authenticate(token).isPresent()) {
-        ProductPersistence productDAO = dbi.open(ProductPersistence.class);
-        ProductModel product = productDAO.getProducts(pId);
-        productDAO.close();
+            ProductPersistence productDAO = dbi.open(ProductPersistence.class);
+            ProductModel product = productDAO.getProducts(pId);
+            productDAO.close();
 
         return product;
 //        } else {
