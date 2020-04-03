@@ -1,8 +1,8 @@
 package resources;
 
+import com.google.gson.Gson;
 import io.dropwizard.auth.AuthenticationException;
-import models.OrderModel;
-import models.ProductModel;
+import models.*;
 import services.OrderService;
 import services.ProductService;
 
@@ -35,15 +35,30 @@ public class OrderResource {
 
     @Path("/setNewOrder")
     @POST
-    //TODO: QUERY PARAM WITH REPLACE WITH PRODUCTMODEL
-    public Response setNewOrder(@HeaderParam("Token") String TokenHeaderParam, @QueryParam("products") String JSONproduct) throws AuthenticationException {
-        int product = this.oService.setNewOrder(2);
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response setNewOrder(NewOrder order) throws AuthenticationException, SQLException {
+        Gson g = new Gson();
+        ContactModel contact = g.fromJson(order.getContactNaw(), ContactModel.class);
+        ProductModel[] products = g.fromJson(order.getProducts(), ProductModel[].class);
+        NewUserModel newUser = g.fromJson(order.getNewUser(), NewUserModel.class);
 
-        if(product != -1){
-            return Response.ok(product).build();
-        }else{
-            return Response.ok("Failed creating order").build();
-        }
+        int product = this.oService.setNewOrder(contact, products, newUser);
+
+//        if(product != -1){
+//            return Response.ok(product).build();
+//        }else{
+//            return Response.ok("Failed creating order").build();
+//        }
+        return Response.accepted().build();
+    }
+
+    @Path("/checkPostalCode/{postalcode}")
+    @GET
+    public Response getPostalCode(@PathParam("postalcode") String postalcode){
+        boolean valid = this.oService.checkPostalCode(postalcode);
+
+        return Response.ok(valid).build();
     }
 
 

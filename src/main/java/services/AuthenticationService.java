@@ -3,6 +3,7 @@ package services;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import org.mindrot.jbcrypt.BCrypt;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import models.CredentialModel;
@@ -58,16 +59,30 @@ public class AuthenticationService implements Authenticator<String, UserModel> {
 	 */
 	public Optional<UserModel> authenticateUser(CredentialModel credential) throws SQLException {
 		UserPersistence userDAO = dbi.open(UserPersistence.class);
-        
-        UserModel user = userDAO.getUserByEmail(credential.getEmail());
-		 
-		user.setAuthToken(authorisationService.encodeJWToken(user.getEmail(), user.getUserId()));
+		UserModel user = userDAO.getUserByEmail(credential.getEmail());
 
-      
-        userDAO.close();
-        
-        return Optional.of(user);
+		if(this.checkPassword(credential.getPassword(), user.getPassword())){
+			user.setAuthToken(authorisationService.encodeJWToken(user.getEmail(), user.getUserId()));
+			userDAO.close();
+			return Optional.of(user);
+		}else{
+			return null;
+		}
+
+		 
+
     }
+
+	public boolean checkPassword(String password_plaintext, String stored_hash) {
+		boolean password_verified = false;
+
+		if(null == stored_hash || !stored_hash.startsWith("$2a$"))
+			throw new java.lang.IllegalArgumentException("Invalid hash provided for comparison");
+
+		password_verified = BCrypt.checkpw(password_plaintext, stored_hash);
+
+		return(password_verified);
+	}
 
 
 }

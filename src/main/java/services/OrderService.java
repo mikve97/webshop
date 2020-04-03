@@ -1,8 +1,7 @@
 package services;
 
 import io.dropwizard.auth.AuthenticationException;
-import models.OrderModel;
-import models.ProductModel;
+import models.*;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.skife.jdbi.v2.DBI;
@@ -56,19 +55,38 @@ public class OrderService {
     }
 
     //TODO: REPLACE USER ID IN THE TOKEN VAR WITH THE JWT CLAIMS USERID
-    public int setNewOrder(int token) throws AuthenticationException {
+    public int setNewOrder(ContactModel contact, ProductModel[] products, NewUserModel user) throws AuthenticationException, SQLException {
 //        if (this.authenticationService.authenticate(token).isPresent()) {
+        ContactService cs = new ContactService();
+        //This method either creates or returns a new contact
+        ContactModel newContact = cs.createNewContactNaw(contact);
+        OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
+        if(user.getEmail() != "" && user.getPassword() !=""){
+            //Create a new user
+            UserService us = new UserService();
+
+            //This method either creates a new user or returns the already existing user.
+            UserModel newUser = us.createNewUser(user, newContact.getContactNawId());
+            int orderSucceeded = orderDAO.insertOrderTransWithUser(newContact, newUser, products);
+            orderDAO.close();
+            return orderSucceeded;
+        }else{
+            int orderSucceeded  = orderDAO.insertOrderTransWithoutUser(newContact, products);
+            orderDAO.close();
+            return orderSucceeded;
+        }
+    }
+
+    public boolean checkPostalCode(String pc){
 
         OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
-        int fetchedProducts = orderDAO.insertOrderTrans(token, new Date());
-        System.out.println(fetchedProducts);
+        int result = orderDAO.getPostalCode(pc);
         orderDAO.close();
-
-
-        return fetchedProducts;
-//        } else {
-//            return null;
-//        }
+        if(result > 0)
+            return true;
+        else{
+            return false;
+        }
     }
 
 
