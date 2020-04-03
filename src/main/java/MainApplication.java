@@ -7,6 +7,8 @@ import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import models.*;
+import resources.AuthResource;
+import resources.OrderResource;
 import services.AuthenticationService;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -27,9 +29,9 @@ public class MainApplication extends Application<MainConfiguration> {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-         new MainApplication().run(new String[] {"server", "config.yml"});
+        new MainApplication().run(new String[] {"server", "config.yml"});
     }
-    
+
     /**
      * @author Mike van Es
      */
@@ -37,45 +39,49 @@ public class MainApplication extends Application<MainConfiguration> {
     public String getName() {
         return "starcourt";
     }
-    
+
     /**
-     *  @author Oussama Fahchouch
+     *  @author Mike van Es
      */
     @Override
     public void initialize(final Bootstrap<MainConfiguration> bootstrap) {
-    	bootstrap.addBundle(new MigrationsBundle<MainConfiguration>() {
+        bootstrap.addBundle(new MigrationsBundle<MainConfiguration>() {
             @Override
-                public DataSourceFactory getDataSourceFactory(MainConfiguration configuration) {
-                    return configuration.getDataSourceFactory();
-                }
+            public DataSourceFactory getDataSourceFactory(MainConfiguration configuration) {
+                return configuration.getDataSourceFactory();
+            }
         });
     }
 
     @Override
     public void run(MainConfiguration configuration, Environment environment) throws UnsupportedEncodingException, SQLException {
-    	final FilterRegistration.Dynamic cors = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
+        final FilterRegistration.Dynamic cors = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
 
-	    // Configure CORS parameters
-	    cors.setInitParameter("allowedOrigins", "*");
-	    cors.setInitParameter("allowedHeaders", "*");
-	    cors.setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
+        // Configure CORS parameters
+        cors.setInitParameter("allowedOrigins", "*");
+        cors.setInitParameter("allowedHeaders", "*");
+        cors.setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
 
-	    // Add URL mapping
-	    cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
-	    
+        // Add URL mapping
+        cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
+
         final ProductResource productResource = new ProductResource();
+        final OrderResource orderResource = new OrderResource();
+        final AuthResource authResource = new AuthResource();
 
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(Principal.class));
         environment.jersey().register(RolesAllowedDynamicFeature.class);
         // code to register module
         environment.jersey().register(productResource);
-	    
-	    //toevoegen van de OAuth2 authenticator
-	    environment.jersey().register(new AuthDynamicFeature(
-	    		new OAuthCredentialAuthFilter.Builder<UserModel>()
-	    		.setAuthenticator(new AuthenticationService())
-	    		.buildAuthFilter()
-		));
+        environment.jersey().register(orderResource);
+        environment.jersey().register(authResource);
+
+        //toevoegen van de OAuth2 authenticator
+        environment.jersey().register(new AuthDynamicFeature(
+                new OAuthCredentialAuthFilter.Builder<UserModel>()
+                        .setAuthenticator(new AuthenticationService())
+                        .buildAuthFilter()
+        ));
     }
 
 }

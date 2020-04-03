@@ -19,13 +19,13 @@ public class AuthorisationService {
 	/**
 	 * @return String with JWT
 	 */
-	public String encodeJWToken(String username) {
+	public String encodeJWToken(String email, int userId) {
 		Instant now = Instant.now();
 		
 		String jwt = Jwts.builder()
-			.setSubject("Rittenregistratie")
-			.setAudience("DigitaleFactuur")
-			.claim("username", username)
+			.setSubject(email)
+			.setAudience("starcourt")
+			.claim("userId", userId)
 			.setIssuedAt(Date.from(now))
 			.setExpiration(Date.from(now.plus(60, ChronoUnit.MINUTES)))
 			.signWith(Keys.hmacShaKeyFor(this.secret))
@@ -56,17 +56,17 @@ public class AuthorisationService {
 	
 	/**
 	 * @param jwtoken
-	 * @return String with username from jwtoken
+	 * @return Retrieve any claim from the JWT token
 	 */
-	public String retrieveUsernameFromJWToken(String jwtoken) {
+	public String retrieveClaim(String jwtoken, String claim) {
 		String username = "";
 		
 		Jws<Claims> result = Jwts.parser()	
 				.setSigningKey(Keys.hmacShaKeyFor(this.secret))
 				.parseClaimsJws(jwtoken);
 			
-		username = result.getBody().get("username").toString();
-		
+		username = result.getBody().get(claim).toString();
+
 		return username;
 	}
 	
