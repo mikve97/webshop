@@ -57,14 +57,14 @@ public class AuthenticationService implements Authenticator<String, UserModel> {
 	 * @return Optional<UserModel>
 	 * @throws SQLException
 	 */
-	public Optional<UserModel> authenticateUser(CredentialModel credential) throws SQLException {
+	public String authenticateUser(CredentialModel credential) throws SQLException {
 		UserPersistence userDAO = dbi.open(UserPersistence.class);
 		UserModel user = userDAO.getUserByEmail(credential.getEmail());
-
-		if(this.checkPassword(credential.getPassword(), user.getPassword())){
+		System.out.println(user);
+		if(user != null && this.checkPassword(credential.getPassword(), user.getPassword())){
 			user.setAuthToken(authorisationService.encodeJWToken(user.getEmail(), user.getUserId()));
 			userDAO.close();
-			return Optional.of(user);
+			return user.getAuthToken();
 		}else{
 			return null;
 		}

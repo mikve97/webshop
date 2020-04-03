@@ -26,6 +26,7 @@ public class CredentialModel {
     @JsonCreator
     public CredentialModel(@JsonProperty("email") String email,
                            @JsonProperty("password") String password) {
+        System.out.println(email);
         this.email = email;
         this.password = password;
     }
