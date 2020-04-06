@@ -17,7 +17,8 @@ public class ContactMapper  implements ResultSetMapper<ContactModel> {
                 rs.getString("name"),
                 rs.getString("email"),
                 rs.getString("phone"),
-                rs.getString("company")
+                rs.getString("company"),
+                rs.getBoolean("favorite")
         );
 
         contact.setContactNawId(rs.getInt("contact_naw_id"));

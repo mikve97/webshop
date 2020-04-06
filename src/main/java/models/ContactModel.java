@@ -11,17 +11,28 @@ public class ContactModel {
     private String email;
     private String phonenumber;
     private String companyname;
+    private boolean favorite;
 
-    public ContactModel( String postalcode,  String housenumber,  String name,  String email,
-                         String phonenumber,  String companyname) {
+
+
+    public ContactModel(String postalcode, String housenumber, String name, String email,
+                        String phonenumber, String companyname, boolean favorite) {
         this.postalcode = postalcode;
         this.housenumber = housenumber;
         this.name = name;
         this.email = email;
         this.phonenumber = phonenumber;
         this.companyname = companyname;
+        this.favorite = favorite;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
     public String getPostalcode() {
         return postalcode;
     }

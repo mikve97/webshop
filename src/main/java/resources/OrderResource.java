@@ -33,6 +33,30 @@ public class OrderResource {
         }
     }
 
+    @Path("/countAllOrders")
+    @GET
+    public Response countAllOrders(@HeaderParam("Token") String TokenHeaderParam) throws AuthenticationException {
+        int orders = this.oService.countAllOrders(TokenHeaderParam);
+
+        if(orders > 0){
+            return Response.ok(orders).build();
+        }else{
+            return Response.ok("No products found").build();
+        }
+    }
+
+    @Path("/getOrderFromUser/{userId}")
+    @GET
+    public Response getOrderFromUser(@HeaderParam("Token") String TokenHeaderParam, @PathParam("userId") int userId) throws AuthenticationException {
+        List<OrderModel> orders = this.oService.getOrderFromUser(TokenHeaderParam, userId);
+
+        if(orders != null){
+            return Response.ok(orders).build();
+        }else{
+            return Response.ok("No products found").build();
+        }
+    }
+
     @Path("/setNewOrder")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -45,12 +69,7 @@ public class OrderResource {
 
         int product = this.oService.setNewOrder(contact, products, newUser);
 
-//        if(product != -1){
-//            return Response.ok(product).build();
-//        }else{
-//            return Response.ok("Failed creating order").build();
-//        }
-        return Response.accepted().build();
+        return Response.accepted(product).build();
     }
 
     @Path("/checkPostalCode/{postalcode}")
@@ -59,6 +78,18 @@ public class OrderResource {
         boolean valid = this.oService.checkPostalCode(postalcode);
 
         return Response.ok(valid).build();
+    }
+
+    @Path("/setDelivery/{orderId}")
+    @POST
+    public Response setOrderDeliveryStatus(@HeaderParam("Token") String TokenHeaderParam, @PathParam("orderId") int orderId, boolean status) throws AuthenticationException {
+        int result = this.oService.setDeliveryState(TokenHeaderParam, orderId, status);
+
+        if(result == 1){
+            return Response.ok(result).build();
+        }else{
+            return Response.ok("No products found").build();
+        }
     }
 
 

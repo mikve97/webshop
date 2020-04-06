@@ -26,21 +26,52 @@ public class OrderService {
     }
 
     public List<OrderModel> getAllOrders(String token) throws AuthenticationException {
-//        if (this.authenticationService.authenticate(token).isPresent()) {
+        if (this.authenticationService.authenticate(token).isPresent()) {
             OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
 
             List<OrderModel> fetchedOrders = orderDAO.getAllOrders();
             orderDAO.close();
 
-        for(OrderModel order : fetchedOrders) {
-            //Retrieve the products from a given order. And insert them in to the order.
-            order.setProducts( this.getProductsByOrderId(order.getOrderId()) );
-        }
+            for(OrderModel order : fetchedOrders) {
+                //Retrieve the products from a given order. And insert them in to the order.
+                order.setProducts( this.getProductsByOrderId(order.getOrderId()) );
+            }
 
-        return fetchedOrders;
-//        } else {
-//            return null;
-//        }
+            return fetchedOrders;
+        } else {
+            return null;
+        }
+    }
+
+    public List<OrderModel> getOrderFromUser(String token, int userId) throws AuthenticationException{
+        if (this.authenticationService.authenticate(token).isPresent()) {
+            OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
+
+            List<OrderModel> fetchedOrders = orderDAO.getOrdersFromUser(userId);
+            orderDAO.close();
+
+            for(OrderModel order : fetchedOrders) {
+                //Retrieve the products from a given order. And insert them in to the order.
+                order.setProducts( this.getProductsByOrderId(order.getOrderId()) );
+            }
+
+            return fetchedOrders;
+        } else {
+            return null;
+        }
+    }
+
+    public int countAllOrders(String token) throws AuthenticationException{
+        if (this.authenticationService.authenticate(token).isPresent() && this.authenticationService.retrieveClaim(token, "superUser") == "true") {
+            OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
+
+            int fetchedOrders = orderDAO.countAllOrders();
+            orderDAO.close();
+
+            return fetchedOrders;
+        } else {
+            return 0;
+        }
     }
 
 
@@ -54,26 +85,51 @@ public class OrderService {
 
     }
 
-    //TODO: REPLACE USER ID IN THE TOKEN VAR WITH THE JWT CLAIMS USERID
     public int setNewOrder(ContactModel contact, ProductModel[] products, NewUserModel user) throws AuthenticationException, SQLException {
-//        if (this.authenticationService.authenticate(token).isPresent()) {
-        ContactService cs = new ContactService();
-        //This method either creates or returns a new contact
-        ContactModel newContact = cs.createNewContactNaw(contact);
         OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
         if(user.getEmail() != "" && user.getPassword() !=""){
             //Create a new user
             UserService us = new UserService();
-
+            Date creationDate = new Date();
             //This method either creates a new user or returns the already existing user.
-            UserModel newUser = us.createNewUser(user, newContact.getContactNawId());
+            UserModel newUser = us.createNewUser(user, creationDate);
+            System.out.println(newUser.getName());
+            ContactService cs = new ContactService();
+            //This method either creates or returns a new contact
+            ContactModel newContact;
+            if(newUser.getCreatedAt() == creationDate){
+                //New user make this address his favorite
+                newContact = cs.createNewContactNaw(contact, true);
+                cs.createNewContactAccountCoupling(newUser.getUserId(), newContact.getContactNawId());
+            }else{
+                newContact = cs.createNewContactNaw(contact, false);
+            }
+
+
             int orderSucceeded = orderDAO.insertOrderTransWithUser(newContact, newUser, products);
             orderDAO.close();
             return orderSucceeded;
         }else{
+            ContactService cs = new ContactService();
+            //This method either creates or returns a new contact
+            ContactModel newContact = cs.createNewContactNaw(contact, true);
+
             int orderSucceeded  = orderDAO.insertOrderTransWithoutUser(newContact, products);
             orderDAO.close();
             return orderSucceeded;
+        }
+    }
+
+    public int setDeliveryState(String token, int orderId, boolean status) throws AuthenticationException {
+        if (this.authenticationService.authenticate(token).isPresent() && this.authenticationService.retrieveClaim(token, "superUser") == "true") {
+            OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
+
+            int fetchedOrders = orderDAO.setDeliveryStatus(orderId, status);
+            orderDAO.close();
+
+            return fetchedOrders;
+        } else {
+            return 0;
         }
     }
 
@@ -88,6 +144,8 @@ public class OrderService {
             return false;
         }
     }
+
+
 
 
 }

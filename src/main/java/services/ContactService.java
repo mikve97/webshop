@@ -1,20 +1,20 @@
 package services;
 
+import io.dropwizard.auth.AuthenticationException;
 import models.ContactModel;
-import models.OrderModel;
 import org.skife.jdbi.v2.DBI;
-import org.skife.jdbi.v2.sqlobject.Bind;
 import persistences.ContactPersistance;
-import persistences.OrderPersistence;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class ContactService {
     private DBI dbi;
+    private AuthenticationService authenticationService;
     public ContactService() throws SQLException {
         util.DbConnector.getInstance();
         dbi = util.DbConnector.getDBI();
+        this.authenticationService = new AuthenticationService();
     }
 
     public ContactModel searchForContactByContactNaw(ContactModel contact){
@@ -30,12 +30,12 @@ public class ContactService {
         }
     }
 
-    public ContactModel createNewContactNaw(ContactModel contact){
+    public ContactModel createNewContactNaw(ContactModel contact, boolean favorite){
         ContactPersistance contactDAO = dbi.open(ContactPersistance.class);
         ContactModel checkIfContactExists = this.searchForContactByContactNaw(contact);
 
         if(checkIfContactExists == null) {
-            int newContact = contactDAO.setNewContact(contact.getName(), contact.getCompanyname(), contact.getPhonenumber(), contact.getEmail(), contact.getPostalcode(), contact.getHousenumber());
+            int newContact = contactDAO.setNewContact(contact.getName(), contact.getCompanyname(), contact.getPhonenumber(), contact.getEmail(), contact.getPostalcode(), contact.getHousenumber(), favorite);
             ContactModel newContactModel = searchForContactByContactNaw(contact);
             contactDAO.close();
             return newContactModel;
@@ -44,4 +44,54 @@ public class ContactService {
         }
 
     }
+
+    public int createNewContactAccountCoupling(int userId, int contactNawId){
+        ContactPersistance contactDAO = dbi.open(ContactPersistance.class);
+        int result = contactDAO.setContactNawCoupling(userId, contactNawId);
+        contactDAO.close();
+
+        return result;
+
+    }
+
+    public List<ContactModel> getContactByUserId(String token, int userId) throws AuthenticationException {
+        if (this.authenticationService.authenticate(token).isPresent()) {
+            ContactPersistance contactDAO = dbi.open(ContactPersistance.class);
+            List<ContactModel> cm = contactDAO.getContactByUserId(userId);
+            contactDAO.close();
+            return cm;
+        }else{
+            return null;
+        }
+
+    }
+
+    public ContactModel getContactFavorite(String token, int userId) throws AuthenticationException {
+        if (this.authenticationService.authenticate(token).isPresent()) {
+            ContactPersistance contactDAO = dbi.open(ContactPersistance.class);
+            ContactModel cm = contactDAO.getContactFavoriteByUserId(userId);
+            contactDAO.close();
+            return cm;
+        }else{
+            return null;
+        }
+
+    }
+
+    public boolean changeFavorite(String token, int oldId, int newId) throws AuthenticationException {
+        if (this.authenticationService.authenticate(token).isPresent()) {
+            ContactPersistance contactDAO = dbi.open(ContactPersistance.class);
+            int resultOld = contactDAO.setContactFavorite(oldId, false);
+            int resultNew = contactDAO.setContactFavorite(newId, true);
+            contactDAO.close();
+            if(resultOld == 1 && resultNew == 1){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
 }

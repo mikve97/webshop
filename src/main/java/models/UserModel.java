@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
+import java.util.Date;
 
 /**
  *
@@ -26,16 +27,35 @@ public class UserModel implements Principal {
     @JsonProperty
     @NotNull
     private String authToken;
+    @JsonProperty
+    @NotNull
+    private boolean superUser;
+
+    @JsonProperty
+    @NotNull
+    private Date createdAt;
 
     //constructor
     @JsonCreator
     public UserModel(@JsonProperty("userId") Integer userId,
                      @JsonProperty("email") String email,
-                     @JsonProperty("password") String password){
+                     @JsonProperty("password") String password,
+                     @JsonProperty("superUser") boolean superUser,
+                     @JsonProperty("createdAt") Date createdAt){
 
         this.userId = userId;
         this.email = email;
         this.password = password;
+        this.superUser = superUser;
+        this.createdAt = createdAt;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public int getUserId() {
@@ -66,7 +86,9 @@ public class UserModel implements Principal {
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
-
+    public boolean getSuperUser(){
+        return this.superUser;
+    }
     @Override
     public String getName() {
         return this.email;

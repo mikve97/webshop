@@ -18,7 +18,8 @@ public class ProductMapper implements ResultSetMapper<ProductModel> {
                 rs.getString("product_description"),
                 rs.getDouble("price"),
                 rs.getInt("product_category_id"),
-                rs.getString("category_name")
+                rs.getString("category_name"),
+                rs.getBoolean("in_stock")
         );
     }
 }
