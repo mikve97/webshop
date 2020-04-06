@@ -7,12 +7,11 @@ import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import models.*;
-import resources.AuthResource;
-import resources.OrderResource;
+import resources.*;
 import services.AuthenticationService;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
-import resources.ProductResource;
+import services.ContactService;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
@@ -68,6 +67,8 @@ public class MainApplication extends Application<MainConfiguration> {
         final ProductResource productResource = new ProductResource();
         final OrderResource orderResource = new OrderResource();
         final AuthResource authResource = new AuthResource();
+        final ContactResource contactResource = new ContactResource();
+        final UserResource userResource = new UserResource();
 
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(Principal.class));
         environment.jersey().register(RolesAllowedDynamicFeature.class);
@@ -75,6 +76,9 @@ public class MainApplication extends Application<MainConfiguration> {
         environment.jersey().register(productResource);
         environment.jersey().register(orderResource);
         environment.jersey().register(authResource);
+        environment.jersey().register(contactResource);
+        environment.jersey().register(userResource);
+
 
         //toevoegen van de OAuth2 authenticator
         environment.jersey().register(new AuthDynamicFeature(

@@ -19,13 +19,14 @@ public class AuthorisationService {
 	/**
 	 * @return String with JWT
 	 */
-	public String encodeJWToken(String email, int userId) {
+	public String encodeJWToken(String email, int userId, boolean superUser) {
 		Instant now = Instant.now();
 		
 		String jwt = Jwts.builder()
 			.setSubject(email)
 			.setAudience("starcourt")
 			.claim("userId", userId)
+			.claim("superUser", superUser)
 			.setIssuedAt(Date.from(now))
 			.setExpiration(Date.from(now.plus(60, ChronoUnit.MINUTES)))
 			.signWith(Keys.hmacShaKeyFor(this.secret))

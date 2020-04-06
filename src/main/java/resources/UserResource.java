@@ -8,6 +8,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
+import java.util.Date;
 
 @Path("/user")
 @Produces(MediaType.APPLICATION_JSON)
@@ -24,6 +25,18 @@ public class UserResource {
     public Response setNewUser(NewUserModel user) throws AuthenticationException {
 //        int product = this.oService.setNewOrder(2);
 
-        return Response.ok(this.uService.createNewUser(user, -1)).build();
+        return Response.ok(this.uService.createNewUser(user, new Date())).build();
     }
+
+    @Path("/countAllUsers")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setNewUser(@HeaderParam("Token") String TokenHeaderParam) throws AuthenticationException {
+//        int product = this.oService.setNewOrder(2);
+
+        return Response.ok(this.uService.countAllUsers(TokenHeaderParam)).build();
+    }
+
+
+
 }

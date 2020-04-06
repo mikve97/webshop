@@ -12,7 +12,9 @@ public class OrderModel {
     private int userId;
     private int contactNawId;
     private Date orderDate;
+    private ContactModel contact;
     private List<ProductModel> products;
+    private boolean delivered;
 
     /**
      * Basic model so we can return our projects to our frond-end
@@ -21,12 +23,14 @@ public class OrderModel {
         // Jackson deserialization
     }
 
-    public OrderModel(int orderId, int userId, int contactNawId, Date orderDate, List<ProductModel> products){
+    public OrderModel(int orderId, int userId, int contactNawId, Date orderDate, ContactModel contact, List<ProductModel> products, boolean delivered){
         this.orderId = orderId;
         this.userId = userId;
         this.orderDate = orderDate;
+        this.contact = contact;
         this.products = products;
         this.contactNawId = contactNawId;
+        this.delivered = delivered;
     }
 
     public int getOrderId() {
@@ -59,5 +63,21 @@ public class OrderModel {
 
     public void setProducts(List<ProductModel> products) {
         this.products = products;
+    }
+
+    public ContactModel getContact() {
+        return contact;
+    }
+
+    public void setContact(ContactModel contact) {
+        this.contact = contact;
+    }
+
+    public boolean getDelivered() {
+        return delivered;
+    }
+
+    public void setDeliverd(boolean delivered) {
+        this.delivered = delivered;
     }
 }

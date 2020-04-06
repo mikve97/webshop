@@ -60,9 +60,8 @@ public class AuthenticationService implements Authenticator<String, UserModel> {
 	public String authenticateUser(CredentialModel credential) throws SQLException {
 		UserPersistence userDAO = dbi.open(UserPersistence.class);
 		UserModel user = userDAO.getUserByEmail(credential.getEmail());
-		System.out.println(user);
 		if(user != null && this.checkPassword(credential.getPassword(), user.getPassword())){
-			user.setAuthToken(authorisationService.encodeJWToken(user.getEmail(), user.getUserId()));
+			user.setAuthToken(authorisationService.encodeJWToken(user.getEmail(), user.getUserId(), user.getSuperUser()));
 			userDAO.close();
 			return user.getAuthToken();
 		}else{

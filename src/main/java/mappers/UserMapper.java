@@ -18,10 +18,13 @@ public class UserMapper implements ResultSetMapper<UserModel> {
 
     @Override
     public UserModel map(int i, ResultSet rs, StatementContext statementContext) throws SQLException {
+
         return new UserModel(
                 rs.getInt("user_id"),
                 rs.getString("email"),
-                rs.getString("password")
+                rs.getString("password"),
+                rs.getBoolean("super_user"),
+                rs.getDate("created_at")
         );
     }
 }
