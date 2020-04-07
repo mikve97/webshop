@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.List;
 
-@Path("/contact")
+@Path("/api/contact")
 @Produces(MediaType.APPLICATION_JSON)
 public class ContactResource {
     private ContactService cService;

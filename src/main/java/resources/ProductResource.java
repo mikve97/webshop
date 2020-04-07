@@ -13,7 +13,7 @@ import models.NewProductModel;
 import models.ProductModel;
 import services.ProductService;
 
-@Path("/product")
+@Path("/api/product")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProductResource {
     private  ProductService pService;

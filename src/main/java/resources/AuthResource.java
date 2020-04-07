@@ -13,7 +13,7 @@ import models.UserModel;
 import services.AuthenticationService;
 import services.AuthorisationService;
 
-@Path("/auth")
+@Path("/api/auth")
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthResource {
     private AuthenticationService authenticationService;

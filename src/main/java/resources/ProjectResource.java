@@ -17,7 +17,7 @@ import io.dropwizard.auth.AuthenticationException;
 /**
  * @author Mike van Es
  */
-@Path("/project")
+@Path("/api/project")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProjectResource {
 

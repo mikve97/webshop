@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.Date;
 
-@Path("/user")
+@Path("/api/user")
 @Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
     private UserService uService;
