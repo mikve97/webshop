@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.List;
 
-@Path("/order")
+@Path("/api/order")
 @Produces(MediaType.APPLICATION_JSON)
 public class OrderResource {
     private OrderService oService;
