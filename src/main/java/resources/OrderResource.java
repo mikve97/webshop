@@ -86,6 +86,7 @@ public class OrderResource {
     public int setOrderDeliveryStatus(@HeaderParam("Token") String TokenHeaderParam, @PathParam("orderId") int orderId, boolean status) throws AuthenticationException {
         int result = this.oService.setDeliveryState(TokenHeaderParam, orderId, status);
 
+        
         return result;
     }
 
