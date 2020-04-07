@@ -49,6 +49,7 @@ public class OrderResource {
     @GET
     public Response getOrderFromUser(@HeaderParam("Token") String TokenHeaderParam, @PathParam("userId") int userId) throws AuthenticationException {
         List<OrderModel> orders = this.oService.getOrderFromUser(TokenHeaderParam, userId);
+        System.out.println(orders);
 
         if(orders != null){
             return Response.ok(orders).build();
