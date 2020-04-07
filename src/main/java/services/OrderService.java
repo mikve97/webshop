@@ -9,6 +9,8 @@ import persistences.OrderPersistence;
 import persistences.ProductPersistence;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +48,7 @@ public class OrderService {
     public List<OrderModel> getOrderFromUser(String token, int userId) throws AuthenticationException{
         if (this.authenticationService.authenticate(token).isPresent()) {
             OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
-
+            System.out.println(userId);
             List<OrderModel> fetchedOrders = orderDAO.getOrdersFromUser(userId);
             orderDAO.close();
 
@@ -93,11 +95,13 @@ public class OrderService {
             Date creationDate = new Date();
             //This method either creates a new user or returns the already existing user.
             UserModel newUser = us.createNewUser(user, creationDate);
-            System.out.println(newUser.getName());
+
             ContactService cs = new ContactService();
             //This method either creates or returns a new contact
+
+            DateFormat format = new SimpleDateFormat("YYYY-MM-dd");
             ContactModel newContact;
-            if(newUser.getCreatedAt() == creationDate){
+            if(newUser.getCreatedAt().toString().equals(format.format(creationDate))){
                 //New user make this address his favorite
                 newContact = cs.createNewContactNaw(contact, true);
                 cs.createNewContactAccountCoupling(newUser.getUserId(), newContact.getContactNawId());
