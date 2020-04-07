@@ -83,14 +83,10 @@ public class OrderResource {
 
     @Path("/setDelivery/{orderId}")
     @POST
-    public Response setOrderDeliveryStatus(@HeaderParam("Token") String TokenHeaderParam, @PathParam("orderId") int orderId, boolean status) throws AuthenticationException {
+    public int setOrderDeliveryStatus(@HeaderParam("Token") String TokenHeaderParam, @PathParam("orderId") int orderId, boolean status) throws AuthenticationException {
         int result = this.oService.setDeliveryState(TokenHeaderParam, orderId, status);
 
-        if(result == 1){
-            return Response.ok(result).build();
-        }else{
-            return Response.ok("No products found").build();
-        }
+        return result;
     }
 
 
