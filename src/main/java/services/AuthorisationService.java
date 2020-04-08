@@ -10,11 +10,9 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
-/** 
- * @author Oussama Fahchouch
- */
 public class AuthorisationService {
 	byte[] secret = Base64.getDecoder().decode("uidupQNPG1sBZZNA34U9eTgECs6BVfhAIOZtWi/BR0Y=");
+
 	
 	/**
 	 * @return String with JWT

@@ -7,11 +7,6 @@ import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.Date;
 
-/**
- *
- * @author Ali Rezaa Ghariebiyan
- * @version 08-11-2019
- */
 
 public class UserModel implements Principal {
 

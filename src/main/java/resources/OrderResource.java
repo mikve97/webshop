@@ -49,7 +49,6 @@ public class OrderResource {
     @GET
     public Response getOrderFromUser(@HeaderParam("Token") String TokenHeaderParam, @PathParam("userId") int userId) throws AuthenticationException {
         List<OrderModel> orders = this.oService.getOrderFromUser(TokenHeaderParam, userId);
-        System.out.println(orders);
 
         if(orders != null){
             return Response.ok(orders).build();
@@ -86,7 +85,7 @@ public class OrderResource {
     public int setOrderDeliveryStatus(@HeaderParam("Token") String TokenHeaderParam, @PathParam("orderId") int orderId, boolean status) throws AuthenticationException {
         int result = this.oService.setDeliveryState(TokenHeaderParam, orderId, status);
 
-        
+
         return result;
     }
 

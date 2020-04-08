@@ -3,10 +3,6 @@ logging:
   loggers:
     nl.dfbackend.git: DEBUG
 
-jwt-secret: "d8?qPu*%^mu5#gR2RdN2ezs!!V7=b=@jNj=WZMRDDZq5nqJ389SkQ4p+K5EQMB_&#$VG-PhBnZQ4SgtQcBpx8pG628+qDM+e#JU#2$B899m3b?DeX8aExrW=6c$^xnTJSjaAehqCxL8dQ7T&=9N7RPZDhn&^8MWyc_dP5_jd-^%QFfxbSGA7nb!4g$tCyy8AvXG=M-U=^e35G!4j_h!pjzPB-+Bd5M8#MX6Ry_5vS9&pzKTfK_ScJrv_$5ftw+_q!$ff4mNeBEnujR-gXn^Uk=n$rdXM7yZsq3!?h7mKW-F8hmAjxRmChD@7W#H$JHYc9GUx-s&#QP-u&vZsjpDvfNDZkb7qLTGKLMG5-J$Hf_fJ@^5ZRGYBgBXhTGQ8tky=sQMQya4kT%4+ThN2ScRJssREdw$-4!j8NtpdJfMKM@4aJF2C_+*Tz#hyF7-QpuASKf6^EvFRFcza2$dW?kaEuV&FVusMqh2Z^@stR?UdqK2x@cka5!Zq_G%yjN#!DjKu"
-
-apiKey: 79554e2460ae336c07c3eb0208adbb4cc4af184c17b51e0a2373cc0f9bba87b5
-userId: 56840
 
 
 database:
