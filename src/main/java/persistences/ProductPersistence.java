@@ -1,8 +1,10 @@
 package persistences;
 
 import mappers.CategoryMapper;
+import mappers.OrdersProductMapper;
 import mappers.ProductMapper;
 import models.CategoryModel;
+import models.OrdersProductModel;
 import models.ProductModel;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
@@ -18,6 +20,10 @@ import java.util.List;
  */
 @RegisterMapper(ProductMapper.class)
 public interface ProductPersistence {
+
+	@RegisterMapper({OrdersProductMapper.class})
+	@SqlQuery("SELECT p.*, pc.*, op.* FROM orders_product op LEFT JOIN product p ON op.product_id = p.product_id LEFT JOIN product_category pc ON p.product_category_id = pc.product_category_id WHERE op.order_id = :oId ")
+	List<OrdersProductModel> getAllProductsByOrderId(@Bind("oId") int paramInt);
 
 	/**
 	 * @author Mike van Es

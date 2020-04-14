@@ -15,8 +15,6 @@ public class UserService {
     private DBI dbi;
     private UserPersistence userDAO;
 
-    // Define the BCrypt workload to use when generating password hashes.
-    private int workload = 12;
     private AuthenticationService authenticationService;
 
     public UserService() throws SQLException {
@@ -30,8 +28,7 @@ public class UserService {
         UserModel foundUser = userDAO.getUserByEmail(user.getEmail());
 
         if(foundUser == null){
-            String hashedPassword = this.hashPassword(user.getPassword());
-            int row = userDAO.createNewUser(user.getEmail(), hashedPassword, created_at);
+            int row = userDAO.createNewUser(user.getEmail(), user.getPassword(), created_at);
             UserModel newUser = userDAO.getUserByEmail(user.getEmail());
             userDAO.close();
 
@@ -58,13 +55,6 @@ public class UserService {
         } else {
             return 0;
         }
-    }
-
-    private  String hashPassword(String password_plaintext) {
-        String salt = BCrypt.gensalt(this.workload);
-        String hashed_password = BCrypt.hashpw(password_plaintext, salt);
-
-        return(hashed_password);
     }
 
 }

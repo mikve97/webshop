@@ -1,7 +1,12 @@
 package models;
 
+import javax.validation.constraints.NotNull;
+
 public class CategoryModel {
+
+    @NotNull
     private int categoryId;
+    @NotNull
     private String categoryName;
 
     public CategoryModel(int categoryId, String categoryName) {

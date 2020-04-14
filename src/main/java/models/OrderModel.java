@@ -13,7 +13,7 @@ public class OrderModel {
     private int contactNawId;
     private Date orderDate;
     private ContactModel contact;
-    private List<ProductModel> products;
+    private List<OrdersProductModel> products;
     private boolean delivered;
 
     /**
@@ -23,7 +23,7 @@ public class OrderModel {
         // Jackson deserialization
     }
 
-    public OrderModel(int orderId, int userId, int contactNawId, Date orderDate, ContactModel contact, List<ProductModel> products, boolean delivered){
+    public OrderModel(int orderId, int userId, int contactNawId, Date orderDate, ContactModel contact, List<OrdersProductModel> products, boolean delivered){
         this.orderId = orderId;
         this.userId = userId;
         this.orderDate = orderDate;
@@ -57,11 +57,11 @@ public class OrderModel {
         this.orderDate = orderDate;
     }
 
-    public List<ProductModel> getProducts() {
+    public List<OrdersProductModel> getProducts() {
         return products;
     }
 
-    public void setProducts(List<ProductModel> products) {
+    public void setProducts(List<OrdersProductModel> products) {
         this.products = products;
     }
 

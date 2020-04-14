@@ -27,8 +27,8 @@ public interface ContactPersistance {
             "WHERE contact_naw_id = :contactId;  ")
     int setContactFavorite(@Bind("contactId") int contactId, @Bind("favorite") boolean favorite);
 
-    @SqlQuery("SELECT * FROM contact_naw WHERE zip_code = :zc AND house_number = :hn")
-    ContactModel searchContact(@Bind("zc") String zip_code, @Bind("hn") String house_number);
+    @SqlQuery("SELECT * FROM contact_naw WHERE zip_code = :zc AND house_number = :hn AND email = :email")
+    ContactModel searchContact(@Bind("zc") String zip_code, @Bind("hn") String house_number, @Bind("email") String email);
 
     @SqlQuery("SELECT cn.* FROM contact_naw cn LEFT JOIN account_contact_coupling acc ON acc.contact_naw_id = cn.contact_naw_id LEFT JOIN account a ON acc.account_id = a.user_id WHERE a.user_id = :userId")
     List<ContactModel> getContactByUserId(@Bind("userId") int userId);

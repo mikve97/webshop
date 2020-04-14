@@ -2,10 +2,12 @@ package services;
 
 import io.dropwizard.auth.AuthenticationException;
 import models.CategoryModel;
+import models.OrdersProductModel;
 import models.ProductModel;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.skife.jdbi.v2.DBI;
+import persistences.OrderPersistence;
 import persistences.ProductPersistence;
 import persistences.UserPersistence;
 
@@ -23,6 +25,16 @@ public class ProductService {
 
 
     }
+
+    public List<OrdersProductModel> getProductsByOrderId(int oId){
+        ProductPersistence productDAO = dbi.open(ProductPersistence.class);
+        List<OrdersProductModel> fetchedProducts = productDAO.getAllProductsByOrderId(oId);
+        productDAO.close();
+
+        return fetchedProducts;
+
+    }
+
     public List<CategoryModel> getAllCategories(String TokenHeaderParam) throws AuthenticationException {
         if (this.authenticationService.authenticate(TokenHeaderParam).isPresent() && this.authenticationService.retrieveClaim(TokenHeaderParam, "superUser").equals("true" )) {
             ProductPersistence productDAO = dbi.open(ProductPersistence.class);

@@ -8,11 +8,11 @@ import org.skife.jdbi.v2.DBI;
  * @author Mike van Es
  */
 public class DbConnector {
-	private final static String url = "manny.db.elephantsql.com";
-	private final static int port = 5432;
-	private final static String dbName = "zhuvufna";
-	private final static String username = "zhuvufna";
-	private final static String password = "4_MAYaQGFchZb1f5gq4RMN21WMGMWtJ_";
+	private static final String url = "127.0.0.1";
+	private static final int port = 5432;
+	private static final String dbName = "pancy";
+	private static final String username = "pancy";
+	private static final String password = "f3823903b2dd6e35243b1bbe5a14f651";
 	private static DbConnector singleInstance = null;
 	private static PGSimpleDataSource source = null;
 

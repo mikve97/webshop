@@ -9,6 +9,7 @@ import persistences.OrderPersistence;
 import persistences.ProductPersistence;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,40 +28,40 @@ public class OrderService {
 
     }
 
-    public List<OrderModel> getAllOrders(String token) throws AuthenticationException {
+    public List<OrderModel> getAllOrders(String token) throws AuthenticationException, SQLException {
         if (this.authenticationService.authenticate(token).isPresent()) {
             OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
 
             List<OrderModel> fetchedOrders = orderDAO.getAllOrders();
             orderDAO.close();
 
-            for(OrderModel order : fetchedOrders) {
-                //Retrieve the products from a given order. And insert them in to the order.
-                order.setProducts( this.getProductsByOrderId(order.getOrderId()) );
+            ProductService ps = new ProductService();
+            for (OrderModel order : fetchedOrders) {
+                order.setProducts(ps.getProductsByOrderId(order.getOrderId()));
             }
 
             return fetchedOrders;
-        } else {
+        }else{
             return null;
         }
     }
 
-    public List<OrderModel> getOrderFromUser(String token, int userId) throws AuthenticationException{
+    public List<OrderModel> getOrderFromUser(String token, int userId) throws AuthenticationException, SQLException
+    {
         if (this.authenticationService.authenticate(token).isPresent()) {
             OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
-            System.out.println(userId);
             List<OrderModel> fetchedOrders = orderDAO.getOrdersFromUser(userId);
             orderDAO.close();
 
-            for(OrderModel order : fetchedOrders) {
-                //Retrieve the products from a given order. And insert them in to the order.
-                order.setProducts( this.getProductsByOrderId(order.getOrderId()) );
+            ProductService ps = new ProductService();
+            for (OrderModel order : fetchedOrders)
+            {
+                order.setProducts(ps.getProductsByOrderId(order.getOrderId()));
             }
 
             return fetchedOrders;
-        } else {
-            return null;
         }
+        return null;
     }
 
     public int countAllOrders(String token) throws AuthenticationException{
@@ -77,38 +78,27 @@ public class OrderService {
     }
 
 
-    //TODO: MOVE TO PRODUCT SERVICE
-    private List<ProductModel> getProductsByOrderId(int oId){
+
+    public int setNewOrder(ContactModel contact, OrdersProductModel[] products, NewUserModel user) throws AuthenticationException, SQLException {
         OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
-        List<ProductModel> fetchedProducts = orderDAO.getAllProductsByOrderId(oId);
-        orderDAO.close();
-
-        return fetchedProducts;
-
-    }
-
-    public int setNewOrder(ContactModel contact, ProductModel[] products, NewUserModel user) throws AuthenticationException, SQLException {
-        OrderPersistence orderDAO = dbi.open(OrderPersistence.class);
-        if(user.getEmail() != "" && user.getPassword() !=""){
+        if(!user.getEmail().isEmpty() && !user.getPassword().isEmpty()){
             //Create a new user
             UserService us = new UserService();
             Date creationDate = new Date();
+
             //This method either creates a new user or returns the already existing user.
             UserModel newUser = us.createNewUser(user, creationDate);
-
             ContactService cs = new ContactService();
-            //This method either creates or returns a new contact
 
             DateFormat format = new SimpleDateFormat("YYYY-MM-dd");
             ContactModel newContact;
-            if(newUser.getCreatedAt().toString().equals(format.format(creationDate))){
-                //New user make this address his favorite
-                newContact = cs.createNewContactNaw(contact, true);
-                cs.createNewContactAccountCoupling(newUser.getUserId(), newContact.getContactNawId());
-            }else{
-                newContact = cs.createNewContactNaw(contact, false);
-            }
 
+            if(new Timestamp(creationDate.getTime()).equals(new Timestamp(newUser.getCreatedAt().getTime()))){
+                //New user make this address his favorite
+                newContact = cs.createNewContactNawWithUserCoupling(newUser.getUserId(), contact, true);
+            }else{
+                newContact = cs.createNewContactNawWithUserCoupling(newUser.getUserId(), contact, false);
+            }
 
             int orderSucceeded = orderDAO.insertOrderTransWithUser(newContact, newUser, products);
             orderDAO.close();

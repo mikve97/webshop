@@ -20,7 +20,7 @@ public class ContactService {
     public ContactModel searchForContactByContactNaw(ContactModel contact){
         ContactPersistance contactDAO = dbi.open(ContactPersistance.class);
 
-        ContactModel searchContact = contactDAO.searchContact(contact.getPostalcode(), contact.getHousenumber());
+        ContactModel searchContact = contactDAO.searchContact(contact.getPostalcode(), contact.getHousenumber(), contact.getEmail());
         contactDAO.close();
 
         if(searchContact == null){
@@ -30,12 +30,27 @@ public class ContactService {
         }
     }
 
+    public ContactModel createNewContactNawWithUserCoupling(int userid, ContactModel contact, boolean favorite){
+        ContactPersistance contactDAO = dbi.open(ContactPersistance.class);
+        ContactModel checkIfContactExists = this.searchForContactByContactNaw(contact);
+
+        if(checkIfContactExists == null) {
+            contactDAO.setNewContact(contact.getName(), contact.getCompanyname(), contact.getPhonenumber(), contact.getEmail(), contact.getPostalcode(), contact.getHousenumber(), favorite);
+            ContactModel newContactModel = searchForContactByContactNaw(contact);
+            contactDAO.close();
+            this.createNewContactAccountCoupling(userid, newContactModel.getContactNawId());
+            return newContactModel;
+        }else{
+            return checkIfContactExists;
+        }
+    }
+
     public ContactModel createNewContactNaw(ContactModel contact, boolean favorite){
         ContactPersistance contactDAO = dbi.open(ContactPersistance.class);
         ContactModel checkIfContactExists = this.searchForContactByContactNaw(contact);
 
         if(checkIfContactExists == null) {
-            int newContact = contactDAO.setNewContact(contact.getName(), contact.getCompanyname(), contact.getPhonenumber(), contact.getEmail(), contact.getPostalcode(), contact.getHousenumber(), favorite);
+            contactDAO.setNewContact(contact.getName(), contact.getCompanyname(), contact.getPhonenumber(), contact.getEmail(), contact.getPostalcode(), contact.getHousenumber(), favorite);
             ContactModel newContactModel = searchForContactByContactNaw(contact);
             contactDAO.close();
             return newContactModel;
@@ -45,13 +60,10 @@ public class ContactService {
 
     }
 
-    public int createNewContactAccountCoupling(int userId, int contactNawId){
+    private void createNewContactAccountCoupling(int userId, int contactNawId){
         ContactPersistance contactDAO = dbi.open(ContactPersistance.class);
-        int result = contactDAO.setContactNawCoupling(userId, contactNawId);
+        contactDAO.setContactNawCoupling(userId, contactNawId);
         contactDAO.close();
-
-        return result;
-
     }
 
     public List<ContactModel> getContactByUserId(String token, int userId) throws AuthenticationException {

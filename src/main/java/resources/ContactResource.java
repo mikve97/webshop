@@ -38,7 +38,6 @@ public class ContactResource {
     @Path("/changeFavorite")
     @POST
     public Response changeFavorite(@HeaderParam("Token") String TokenHeaderParam, int[] favoriteArr) throws AuthenticationException {
-        System.out.println(favoriteArr[0] +" - "+ favoriteArr[1]);
         boolean result = this.cService.changeFavorite(TokenHeaderParam, favoriteArr[0], favoriteArr[1]);
 
         return Response.ok(result).build();

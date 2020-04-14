@@ -3,8 +3,11 @@ package models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.joda.time.DateTime;
+
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
+import java.security.Timestamp;
 import java.util.Date;
 
 

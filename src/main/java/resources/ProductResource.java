@@ -52,7 +52,6 @@ public class ProductResource {
         List<ProductModel> product = this.pService.getAllProductsInStock();
 
         if(product != null){
-            System.out.println("test");
             return Response.ok(product).build();
         }else{
             return Response.ok("No products found or the user not not authenticated").build();

@@ -1,5 +1,6 @@
 package resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import io.dropwizard.auth.AuthenticationException;
 import models.*;
@@ -9,6 +10,7 @@ import services.ProductService;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class OrderResource {
 
     @Path("/getAllOrders")
     @GET
-    public Response getAllOrders(@HeaderParam("Token") String TokenHeaderParam) throws AuthenticationException {
+    public Response getAllOrders(@HeaderParam("Token") String TokenHeaderParam) throws AuthenticationException, SQLException {
         List<OrderModel> orders = this.oService.getAllOrders(TokenHeaderParam);
 
         if(orders != null){
@@ -47,7 +49,7 @@ public class OrderResource {
 
     @Path("/getOrderFromUser/{userId}")
     @GET
-    public Response getOrderFromUser(@HeaderParam("Token") String TokenHeaderParam, @PathParam("userId") int userId) throws AuthenticationException {
+    public Response getOrderFromUser(@HeaderParam("Token") String TokenHeaderParam, @PathParam("userId") int userId) throws AuthenticationException, SQLException {
         List<OrderModel> orders = this.oService.getOrderFromUser(TokenHeaderParam, userId);
 
         if(orders != null){
@@ -61,11 +63,12 @@ public class OrderResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setNewOrder(NewOrder order) throws AuthenticationException, SQLException {
+    public Response setNewOrder(NewOrder order) throws AuthenticationException, SQLException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
         Gson g = new Gson();
         ContactModel contact = g.fromJson(order.getContactNaw(), ContactModel.class);
-        ProductModel[] products = g.fromJson(order.getProducts(), ProductModel[].class);
-        NewUserModel newUser = g.fromJson(order.getNewUser(), NewUserModel.class);
+        OrdersProductModel[] products = g.fromJson(order.getProducts(), OrdersProductModel[].class);
+        NewUserModel newUser = mapper.readValue(order.getNewUser(), NewUserModel.class);
 
         int product = this.oService.setNewOrder(contact, products, newUser);
 

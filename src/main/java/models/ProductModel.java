@@ -1,14 +1,20 @@
 package models;
 
-import java.util.List;
-
+import javax.validation.constraints.NotNull;
 public class ProductModel {
+    @NotNull
     private int productId;
+    @NotNull
     private String name;
+    @NotNull
     private String description;
+    @NotNull
     private double price;
+    @NotNull
     private int categoryId;
+    @NotNull
     private String categoryName;
+    @NotNull
     private boolean inStock;
 
 

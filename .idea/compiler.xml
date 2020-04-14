@@ -6,8 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="IWDER" />
         <module name="webshop" />
+        <module name="pancy-back-end" />
+        <module name="IWDER" />
       </profile>
     </annotationProcessing>
   </component>
